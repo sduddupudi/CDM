@@ -1,0 +1,40 @@
+﻿@model QuizbeePlus.ViewModels.StudentQuizListViewModel
+@{
+    ViewBag.Title = Model.PageInfo.PageTitle;
+
+    var isContainerClass = !Model.isPartialView ? string.Format("class=container-fluid") : string.Empty;
+}
+
+<div @isContainerClass>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#"><i class="fas fa-clipboard-check"></i>&nbsp;@Model.PageInfo.PageTitle</a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="contenter" class="card-body">
+                    @if (!Model.isPartialView)
+                    {
+                        <div class="col-md-8">
+                            <form method="get" action="@Url.MyResults()">
+                                <div class="input-group mb-3">
+                                    <input name="search" class="form-control" placeholder="Enter Quiz Name" value="@Model.searchTerm" required>
+                                    <button type="submit" class="form-control btn btn-primary waves-effect waves-light w-md"><i class="fas fa-search mg-r-10"></i>&nbsp;Search</button>
+                                    <a href="@Url.MyResults(false, null, 1, Model.pageSize)" role="button" class="form-control btn btn-primary waves-effect waves-light w-md hide-phone"><i class="fas fa-redo-alt mg-r-10"></i>&nbsp;Reset</a>
+                                </div>
+                                <input type="hidden" name="page" value="1" />
+                                <input type="hidden" name="items" value="@Model.pageSize" />
+                            </form>
+                        </div>
+                    }
+
+                    @Html.Partial("_MyResults", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

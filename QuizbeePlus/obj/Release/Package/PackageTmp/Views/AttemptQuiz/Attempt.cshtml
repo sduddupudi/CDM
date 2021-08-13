@@ -1,0 +1,161 @@
+﻿@model QuizbeePlus.ViewModels.QuizDetailViewModel
+@{
+    ViewBag.Title = Model.PageInfo.PageTitle;
+}
+
+<script src="~/Content/plugins/moment/moment.js"></script>
+<link href="~/Content/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" />
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div class="pull-left">
+                        <h3 class="panel-title">
+                            <span><i class="fas fa-question-circle mg-r-10"></i>&nbsp;</span>
+                            @Model.PageInfo.PageTitle
+                        </h3>
+                    </div>
+                    <div class="pull-right">
+                        @if (Model.EnableQuizTimer)
+                        {
+                            <h2 class="panel-title pull-right text-danger">
+                                <span><i class="fas fa-stopwatch mg-r-10"></i>&nbsp;</span>
+                                <span id="hours">@Model.TimeDuration.Hours.ToString("00")</span>
+                                <span>:</span>
+                                <span id="minutes">@Model.TimeDuration.Minutes.ToString("00")</span>
+                                <span>:</span>
+                                <span id="seconds">@Model.TimeDuration.Seconds.ToString("00")</span>
+                            </h2>
+                        }
+                    </div>
+                </div>                
+                    <div id="contenter" class="card-body">
+                        <div class="wrapper-page m-b-5 mt-5">
+                            <div class="m-t-40 card-box">
+                                <div class="text-center">
+                                    <h4 class="text-uppercase font-bold m-b-0">@Model.Name</h4>
+                                </div>
+                                <hr />
+                                <div class="m-b-20 text-justify">
+                                    <p class="text-muted m-t-30 line-h-24">
+                                        @Model.Description
+                                    </p>
+                                </div>
+                                @*@if (!User.IsInRole("MockUser"))
+                                {*@
+                                    <div class="row m-t-30">
+                                        <div class="col-12">
+                                            <button type="button" id="startButton" class="btn btn-lg btn-success btn-block waves-effect waves-light w-md"><i class="fas fa-sign-in-alt"></i>&nbsp;Start Quiz</button>
+                                        </div>
+                                    </div>
+                                @*}*@
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card-footer text-center text-muted">
+                        @{
+                            var quizShareLink = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.AttemptQuiz(Model.ID));
+                        }
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a role="button" class="btn btn-lg btn-facebook btn-block waves-effect waves-light w-md" href="http://www.facebook.com/sharer.php?u=@quizShareLink" target="_blank">
+                                        <span class="text-white"><i class="fab fa-facebook-square"></i>&nbsp;&nbsp;Share Quiz on Facebook</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a role="button" class="btn btn-lg btn-twitter btn-block waves-effect waves-light w-md" href="http://twitter.com/share?text=My%20Quiz%20Result&url=@quizShareLink" target="_blank">
+                                        <span class="text-white"><i class="fab fa-twitter-square"></i>&nbsp;&nbsp;Share Quiz on Twitter</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="TimerExpired" value="false" />
+
+<script src="~/Content/plugins/sweet-alert2/sweetalert2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#startButton").click(function() {
+            StartQuiz();
+        });
+        //StartQuiz();
+    });
+
+    function StartQuiz() {
+        $("#questionLoader").show();
+
+        $.ajax({
+            type: "POST",
+            async: true,
+            url: '@Url.AttemptQuiz(Model.ID)',
+            data: {
+                QuizID: '@Model.ID'
+            }
+        }).done(function(data) {
+            StartTimer();
+
+            $('#contenter').toggle('slide', {
+                direction: 'left'
+            }, 250, function() {
+                $("#contenter").html(data);
+                $('#contenter').toggle('slide', {
+                    direction: 'right'
+                }, 250);
+            });
+        }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+            $("#questionLoader").hide();
+            alert(errorThrown);
+        });
+    }
+
+    var enabledQuizTimer = '@Model.EnableQuizTimer.ToString().ToLower()';
+    var quizTimer;
+    function StartTimer() {
+        if (enabledQuizTimer == 'true') {
+            var countDownDate = moment().add(@Model.TimeDuration.TotalSeconds, 'seconds');
+
+            if (quizTimer == undefined) {
+                quizTimer = setInterval(function () {
+
+                    var difference = countDownDate - moment();
+
+                    var hours = moment.duration(difference).hours();
+                    var minutes = moment.duration(difference).minutes();
+                    var seconds = moment.duration(difference).seconds();
+
+                    $("#hours").html(hours.toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false
+                    }));
+                    $("#minutes").html(minutes.toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false
+                    }));
+                    $("#seconds").html(seconds.toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false
+                    }));
+
+                    if (difference <= 0) {
+                        clearInterval(quizTimer);
+                        $("#TimerExpired").val(true);
+                        SubmitAnswer();
+
+                        //disable any operations in contenter
+                        //$("#contenter *").attr("disabled", "disabled").off('click');
+                    }
+                }, 1000);
+            }
+        }
+    }
+</script>

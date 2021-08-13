@@ -1,0 +1,178 @@
+﻿@model QuizbeePlus.ViewModels.StudentQuizViewModel
+
+@if (Model != null && Model.StudentQuiz != null)
+{
+    var ResultTitle = Model.TimerExpired ? "Quiz Time's Up" : "Quiz Attempt Results";
+
+    var isImageQuestion = Model.StudentQuiz.Quiz.QuizType == QuizType.Image;
+
+<div class="container-fluid">
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/style.css" rel="stylesheet" type="text/css" />
+    <script src="~/Content/js/jquery.min.js"></script>
+
+    <section>
+        <i>Quiz:</i>
+        <h3>
+            @Model.StudentQuiz.Quiz.Name
+        </h3>
+        <p>
+            @Model.StudentQuiz.Quiz.Description
+        </p>
+        <p>
+            Allowed Time:
+            @if (Model.StudentQuiz.Quiz.EnableQuizTimer)
+            {
+                if (Model.StudentQuiz.Quiz.TimeDuration.Hours > 0)
+                {
+                    if (Model.StudentQuiz.Quiz.TimeDuration.Hours == 1)
+                    {
+                        <span>@Model.StudentQuiz.Quiz.TimeDuration.Hours.ToString("00") Hour&nbsp;</span>
+                    }
+                    else
+                    {
+                        <span>@Model.StudentQuiz.Quiz.TimeDuration.Hours.ToString("00") Hours&nbsp;</span>
+                    }
+                }
+                if (Model.StudentQuiz.Quiz.TimeDuration.Minutes > 0)
+                {
+                    if (Model.StudentQuiz.Quiz.TimeDuration.Minutes == 1)
+                    {
+                        <span>@Model.StudentQuiz.Quiz.TimeDuration.Minutes.ToString("00") Minute</span>
+                    }
+                    else
+                    {
+                        <span>@Model.StudentQuiz.Quiz.TimeDuration.Minutes.ToString("00") Minutes</span>
+                    }
+                }
+            }
+            else
+            {
+                <span>Disabled</span>
+            }
+        </p>
+        <hr />
+    </section>
+
+    <section>
+        <i>Attempted By:</i>
+        <h3>
+            @if (Model.StudentQuiz.Student != null)
+            {
+                <span>@Model.StudentQuiz.Student.UserName - (@Model.StudentQuiz.Student.Email)</span>
+            }
+            else
+            {
+                <span>Anonymous</span>
+            }
+        </h3>
+        <p>
+            Time Duration:
+            @Model.StudentQuiz.StartedAt.IfNullShowAlternative("-") ~ @Model.StudentQuiz.CompletedAt.IfNullShowAlternative("Abandoned")
+        </p>
+        <p>
+            Score:
+            @Calculator.CalculateStudentQuizScore(Model.StudentQuiz.AttemptedQuestions)
+            <span>/</span>
+            @(decimal.Parse(Model.StudentQuiz.Quiz.Questions.Count.ToString()))
+        </p>
+        <hr />
+    </section>
+
+    <section>
+        <h4>Attempted Questions:</h4>
+
+        @if (Model.StudentQuiz.AttemptedQuestions != null && Model.StudentQuiz.AttemptedQuestions.Count > 0)
+        {
+            var qIndex = 0;
+
+            foreach (var attemptedQuestion in Model.StudentQuiz.AttemptedQuestions)
+            {
+                qIndex++;
+                <p>
+                    <b>
+                        Q @qIndex - @attemptedQuestion.Question.Title
+                    </b>
+                    <br />
+                    <span>
+                        Score: @attemptedQuestion.Score
+                    </span>
+                    <br />
+                    @if (attemptedQuestion.SelectedOptions.Count == 0)
+                    {
+                        <span>
+                            Skipped
+                        </span>
+                        <br />
+                    }
+                    else
+                    {
+
+                        <span>
+                            Attempted Answer(s):
+                        </span>
+                        <br />
+                        if (isImageQuestion)
+                        {
+                            foreach (var correctOption in attemptedQuestion.SelectedOptions.OrderBy(x => x.Option.IsCorrect))
+                            {
+                                var imgSrc = correctOption.Option.Image != null ? string.Format("/Content/images/{0}", correctOption.Option.Image.Name) : string.Empty;
+
+                                if (correctOption.Option.IsCorrect)
+                                {
+                                    <span>Correct - </span>
+                                }
+                                else
+                                {
+                                    <span>Wrong - </span>
+                                }
+                                <br />
+                                <img src="@imgSrc" class="img-thumbnail" style="height: 300px;">
+                                <br />
+                            }
+                        }
+                        else
+                        {
+                            foreach (var correctOption in attemptedQuestion.SelectedOptions.OrderBy(x => x.Option.IsCorrect))
+                            {
+                                @correctOption.Option.Answer
+                                if (correctOption.Option.IsCorrect)
+                                {
+                                    <span> - Correct</span>
+                                }
+                                else
+                                {
+                                    <span> - Wrong</span>
+                                }
+                                <br />
+                            }
+                        }
+                    }
+                </p>
+            }
+        }
+        else
+        {
+            <p>
+                No Questions Attempted.
+            </p>
+        }
+        <hr />
+    </section>
+
+    <section>
+        <p>
+            Attempt this Quiz at: @string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.AttemptDetails(Model.StudentQuiz.ID))
+        </p>
+    </section>
+</div>
+
+
+
+    <script type="text/javascript">
+        $(function () {
+            window.print();
+        });
+    </script>
+
+}

@@ -1,0 +1,313 @@
+﻿@model QuizbeePlus.ViewModels.EditQuestionViewModel
+
+<form role="form" id="operationForm" method="post" action="@Url.EditQuestion(Model.QuizID, Model.ID)">
+    <input type="hidden" id="ID" name="ID" value="@Model.ID" />
+    <input type="hidden" id="QuizID" name="QuizID" value="@Model.QuizID" />
+
+    <div class="form-group">
+        <label for="Title">Question Title</label>
+        <input class="form-control" type="text" id="Title" name="Title" value="@Model.Title" placeholder="Enter question title">
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Title"] != null && ViewData.ModelState["Title"].Errors.Count > 0)
+        {
+            <div class="m-t-10 alert alert-icon alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <i class="mdi mdi-alert"></i>
+                @Html.ValidationMessageFor(m => m.Title, "", new { @class = "tx-danger" })
+            </div>
+        }
+    </div>
+
+    <div>
+        <label><span name="optionNoText">Correct Options</span></label>
+    </div>
+
+    @if (Model.CorrectOptions != null && Model.CorrectOptions.Count > 0)
+    {
+        foreach (var correctOption in Model.CorrectOptions)
+        {
+            if (correctOption.Image != null)
+            {
+                <div class="option form-group">
+                    <div class="image-holder pull-left">
+                        <input class="txtfield form-control" type="hidden" name="correctOption@(Model.CorrectOptions.IndexOf(correctOption) + 1)" value="@correctOption.Image.ID">
+                        <img src="/Content/images/@correctOption.Image.Name" class="img-thumbnail" style="height: 300px;">
+                    </div>
+                    <div class="delete-holder pull-left p-20">
+                        <button type="button" class="delete-image btn btn-danger waves-effect waves-light w-md"><i class="fas fa-trash-alt mg-r-10"></i>&nbsp;Delete</button>
+                    </div>
+                    <span class="error-holder"></span>
+                    <input class="image-uploader form-control" type="file" accept=".png,.jpg,.jpeg,.gif,.tif" />
+                    <div class="clearfix"></div>
+                </div>
+            }
+            else
+            {
+                <div class="option form-group">
+                    <div class="image-holder pull-left">
+                        <input class="txtfield form-control" type="hidden" name="correctOption@(Model.CorrectOptions.IndexOf(correctOption) + 1)" value="">
+                        <img src="" class="img-thumbnail" style="height: 300px;">
+                    </div>
+                    <div class="delete-holder pull-left p-20">
+                        <button type="button" class="delete-image btn btn-danger waves-effect waves-light w-md"><i class="fas fa-trash-alt mg-r-10"></i>&nbsp;Delete</button>
+                    </div>
+                    <span class="error-holder"></span>
+                    <input class="image-uploader form-control" type="file" accept=".png,.jpg,.jpeg,.gif,.tif" />
+                    <div class="clearfix"></div>
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <div class="option form-group">
+            <div class="image-holder pull-left">
+                <input class="txtfield form-control" type="hidden" name="correctOption1" value="">
+                <img src="" class="img-thumbnail" style="height: 300px; display:none">
+            </div>
+            <div class="delete-holder pull-left p-20" style="display: none;">
+                <button type="button" class="delete-image btn btn-danger waves-effect waves-light w-md"><i class="fas fa-trash-alt mg-r-10"></i>&nbsp;Delete</button>
+            </div>
+            <span class="error-holder"></span>
+            <input class="image-uploader form-control" type="file" accept=".png,.jpg,.jpeg,.gif,.tif" />
+            <div class="clearfix"></div>
+        </div>
+    }
+
+    <span id="correctOptions"></span>
+
+    @if (!ViewData.ModelState.IsValid && ViewData.ModelState["CorrectOptions"] != null && ViewData.ModelState["CorrectOptions"].Errors.Count > 0)
+    {
+        <div class="m-t-10 alert alert-icon alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <i class="mdi mdi-alert"></i>
+            @Html.ValidationMessageFor(m => m.CorrectOptions, "", new { @class = "tx-danger" })
+        </div>
+    }
+
+    <div>
+        <label><span name="optionNoText">Options</span></label>
+    </div>
+
+    @if (Model.Options != null && Model.Options.Count > 0)
+    {
+        foreach (var option in Model.Options)
+        {
+            <div class="option form-group">
+                <div class="image-holder pull-left">
+                    <input class="txtfield" type="hidden" name="option@(Model.Options.IndexOf(option) + 1)" value="@option.Image.ID">
+                    <img src="/Content/images/@option.Image.Name" class="img-thumbnail" style="height: 300px;">
+                </div>
+                <div class="delete-holder pull-left p-20">
+                    <button type="button" class="delete-image btn btn-danger waves-effect waves-light w-md"><i class="fas fa-trash-alt mg-r-10"></i>&nbsp;Delete</button>
+                </div>
+                <span class="error-holder"></span>
+                <input class="image-uploader form-control" type="file" accept=".png,.jpg,.jpeg,.gif,.tif" />
+                <div class="clearfix"></div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="option form-group">
+            <div class="image-holder pull-left">
+                <img src="" class="txtfield img-thumbnail" style="height: 300px; display:none">
+                <input class="txtfield form-control" type="hidden" name="option1" value="">
+            </div>
+            <div class="delete-holder pull-left p-20" style="display: none;">
+                <button type="button" class="delete-image btn btn-danger waves-effect waves-light w-md"><i class="fas fa-trash-alt mg-r-10"></i>&nbsp;Delete</button>
+            </div>
+            <span class="error-holder"></span>
+            <input class="image-uploader form-control" type="file" accept=".png,.jpg,.jpeg,.gif,.tif" />
+            <div class="clearfix"></div>
+        </div>
+    }
+
+    <span id="options"></span>
+
+    @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Options"] != null && ViewData.ModelState["Options"].Errors.Count > 0)
+    {
+        <div class="m-t-10 alert alert-icon alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <i class="mdi mdi-alert"></i>
+            @Html.ValidationMessageFor(m => m.Options, "", new { @class = "tx-danger" })
+        </div>
+    }
+
+    <div id="actionsRow">
+        <hr />
+        <button type="button" id="addCorrectOptionButton" class="btn btn-info waves-effect waves-light w-md"><i class="fas fa-plus mg-r-10"></i>&nbsp;Add Correct Option</button>
+        <button type="button" id="addOptionButton" class="btn btn-info waves-effect waves-light w-md"><i class="fas fa-plus mg-r-10"></i>&nbsp;Add Option</button>
+        <button type="submit" id="updateButton" class="btn btn-warning"><i class="fas fa-save mg-r-10"></i>&nbsp;Update this Question and Go Back</button>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-trash-alt mg-r-10"></i>&nbsp;Delete this Question</button>
+        <a href="@Url.QuestionsList(Model.QuizID)" role="button" class="btn btn-primary waves-effect waves-light w-md"><i class="fas fa-times mg-r-10"></i>&nbsp;Cancel and Go Back</a>
+    </div>
+</form>
+
+
+<div class="correctOptionRowTemplateImage" style="display:none">
+    <div class="image-holder pull-left">
+        <input class="txtfield form-control" type="hidden" name="correctOptionNo">
+        <img src="" class="img-thumbnail" style="height: 300px; display: none;">
+    </div>
+    <div class="delete-holder pull-left p-20" style="display: none;">
+        <button type="button" class="delete-image btn btn-danger waves-effect waves-light w-md"><i class="fas fa-trash-alt mg-r-10"></i>&nbsp;Delete</button>
+    </div>
+    <span class="error-holder"></span>
+    <input class="image-uploader form-control" type="file" accept=".png,.jpg,.jpeg,.gif,.tif" />
+    <div class="clearfix"></div>
+</div>
+
+<div class="optionRowTemplateImage" style="display:none">
+    <div class="image-holder pull-left">
+        <input class="txtfield form-control" type="hidden" name="optionNo">
+        <img src="" class="img-thumbnail" style="height: 300px; display: none;">
+    </div>
+    <div class="delete-holder pull-left p-20" style="display: none;">
+        <button type="button" class="delete-image btn btn-danger waves-effect waves-light w-md"><i class="fas fa-trash-alt mg-r-10"></i>&nbsp;Delete</button>
+    </div>
+    <span class="error-holder"></span>
+    <input class="image-uploader form-control" type="file" accept=".png,.jpg,.jpeg,.gif,.tif" />
+    <div class="clearfix"></div>
+</div>
+
+<div id="errorDiv" style="display:none">
+    <div class="m-t-10 alert alert-icon alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        <i class="mdi mdi-alert"></i>
+        <span class="error-message">
+        </span>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+		$("#addCorrectOptionButton").click(function () {
+			AddCorrectOption();
+		});
+
+		$("#addOptionButton").click(function () {
+			AddOption();
+		});
+
+        ImageUploadsListen();
+        ImageDeleterListen();
+
+        
+		$("#updateButton").click(function () {
+			$("#operationForm").attr("action", "@Url.EditQuestion(Model.QuizID, Model.ID)");
+			$("#operationForm").submit();
+		});
+		$("#deleteButton").click(function () {
+			$("#operationForm").attr("action", "@Url.DeleteQuestion(Model.QuizID, Model.ID)");
+			$("#operationForm").submit();
+		});
+	});
+
+    function ImageUploadsListen() {
+        $(".image-uploader").off('change', ImageUploader).on('change', ImageUploader);
+    }
+
+    function ImageDeleterListen() {
+        $(".delete-image").off('click', ImageDeleter).on('click', ImageDeleter);
+    }
+
+    function ImageDeleter() {
+        $(this).parents('.option').remove();
+    }
+
+	function ImageUploader() {
+
+        var element = this;
+
+        $(element).prevAll('.image-holder').first().children('.txtfield').val("");
+        $(element).prevAll('.image-holder').first().children('.img-thumbnail').hide();
+        $(element).prevAll('.image-holder').first().children('.img-thumbnail').attr('src', '');
+        $(element).prevAll('.error-holder').first().html("");
+        $(element).prevAll('.delete-holder').first().hide();
+
+		var formData = new FormData();
+		var totalFiles = element.files.length;
+		for (var i = 0; i < totalFiles; i++) {
+			var file = element.files[i];
+			formData.append("Photo", file);
+		}
+
+		$.ajax({
+			type: "POST",
+			url: '@Url.UploadImage()',
+			data: formData,
+			dataType: 'json',
+			contentType: false,
+			processData: false
+        }).done(function (data) {
+			if (data.Success) {
+
+                $(element).prevAll('.image-holder').first().children('.txtfield').val(data.File);
+                $(element).prevAll('.image-holder').first().children('.img-thumbnail').attr('src', data.ImageURL);
+                $(element).prevAll('.image-holder').first().children('.img-thumbnail').show();
+
+                $(element).prevAll('.delete-holder').first().show();
+			}
+            else {
+                console.log(data.Message);
+
+                var $error = $('#errorDiv').clone();
+                $error.find('.error-message').html(data.Message);
+                $error.removeAttr("id");
+                $(element).prevAll('.error-holder').first().append($error);
+                $error.slideDown();
+			}
+		}).fail(function (xhr, status, errorThrown) {
+            console.log(errorThrown);
+
+            var $error = $('#errorDiv').clone();
+            $error.find('.error-message').html(errorThrown);
+            $error.removeAttr("id");
+            $(element).prevAll('.error-holder').first().append($error);
+            $error.slideDown();
+		});
+	}
+
+	function AddCorrectOption() {
+		$('<div/>', {
+				'class': 'option form-group', html: GetImageCorrectOptionHtml()
+	    }).hide().insertBefore('#correctOptions').slideDown('slow');
+
+        ImageUploadsListen();
+        ImageDeleterListen();
+	}
+
+	function AddOption() {
+		$('<div/>', {
+				'class': 'option form-group', html: GetImageOptionHtml()
+		}).hide().insertBefore('#options').slideDown('slow');
+
+        ImageUploadsListen();
+        ImageDeleterListen();
+	}
+
+    function GetImageCorrectOptionHtml() {
+		var len = $('.option').length + 1;
+		var $html = $('.correctOptionRowTemplateImage').clone();
+		$html.find('[name=correctOptionNo]')[0].name = "correctOptionNo" + len;
+		return $html.html();
+	}
+
+	function GetImageOptionHtml() {
+		var len = $('.option').length + 1;
+		var $html = $('.optionRowTemplateImage').clone();
+		$html.find('[name=optionNo]')[0].name = "optionNo" + len;
+		return $html.html();
+	}
+
+</script>

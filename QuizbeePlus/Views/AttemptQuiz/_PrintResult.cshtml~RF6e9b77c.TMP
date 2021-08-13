@@ -1,0 +1,239 @@
+﻿@model QuizbeePlus.ViewModels.StudentQuizViewModel
+
+@if (Model != null && Model.StudentQuiz != null)
+{
+    var isImageQuestion = Model.StudentQuiz.Quiz.QuizType == QuizType.Image;
+
+    <section>
+        <i>Quiz:</i>
+        <h1>
+            @Model.StudentQuiz.Quiz.Name
+        </h1>
+        <p>
+            @Model.StudentQuiz.Quiz.Description
+        </p>
+        <p>
+            Allowed Time:
+            @if (Model.StudentQuiz.Quiz.EnableQuizTimer)
+            {
+                if (Model.StudentQuiz.Quiz.TimeDuration.Hours > 0)
+                {
+                    if (Model.StudentQuiz.Quiz.TimeDuration.Hours == 1)
+                    {
+                        <span>@Model.StudentQuiz.Quiz.TimeDuration.Hours.ToString("00") Hour&nbsp;</span>
+                    }
+                    else
+                    {
+                        <span>@Model.StudentQuiz.Quiz.TimeDuration.Hours.ToString("00") Hours&nbsp;</span>
+                    }
+                }
+                if (Model.StudentQuiz.Quiz.TimeDuration.Minutes > 0)
+                {
+                    if (Model.StudentQuiz.Quiz.TimeDuration.Minutes == 1)
+                    {
+                        <span>@Model.StudentQuiz.Quiz.TimeDuration.Minutes.ToString("00") Minute</span>
+                    }
+                    else
+                    {
+                        <span>@Model.StudentQuiz.Quiz.TimeDuration.Minutes.ToString("00") Minutes</span>
+                    }
+                }
+            }
+            else
+            {
+                <span>Disabled</span>
+            }
+        </p>
+    </section>
+    <hr />
+    <section>
+        <i>Attempted By:</i>
+        <br />
+        <h1>
+            @if (Model.StudentQuiz.Student != null)
+            {
+                <span>@Model.StudentQuiz.Student.UserName - @Model.StudentQuiz.Student.Email </span>
+            }
+            else
+            {
+                <i>Anonymous</i>
+            }
+        </h1>
+        <p>
+            Time:
+            @Model.StudentQuiz.StartedAt
+            <span>-</span>
+            @if (Model.StudentQuiz.CompletedAt == null)
+            {
+                <span>
+                    Abandoned
+                </span>
+            }
+            else
+            {
+                <span>
+                    @Model.StudentQuiz.CompletedAt
+                </span>
+            }
+        </p>
+        <p>
+            Score:
+            @Calculator.CalculateStudentQuizScore(Model.StudentQuiz.AttemptedQuestions)
+            <span>/</span>
+            @(decimal.Parse(Model.StudentQuiz.Quiz.Questions.Count.ToString()))
+        </p> 
+    </section>
+    <hr />
+
+    <section>
+        <i>Attempt Details:</i>
+
+    </section>
+
+
+    if (Model.StudentQuiz.AttemptedQuestions != null && Model.StudentQuiz.AttemptedQuestions.Count > 0)
+    {
+        <div class="col-md-12 table-responsive">
+            <table class="table table-striped table-bordered m-b-0">
+                <thead>
+                    <tr>
+                        <th>Questions</th>
+                        <th class="wrap-td">Score</th>
+                        <th>Your Answers</th>
+                        <th>Correct Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var attemptedQuestion in Model.StudentQuiz.AttemptedQuestions)
+                    {
+                        <tr>
+                            <td>
+                                @attemptedQuestion.Question.Title
+                            </td>
+                            <td class="wrap-td">
+                                <b>
+                                    @attemptedQuestion.Score
+                                </b>
+                            </td>
+                            <td>
+                                @if (attemptedQuestion.SelectedOptions.Count == 0)
+                                {
+                                    <b class="text-danger">
+                                        Skipped
+                                    </b>
+                                }
+                                else
+                                {
+                                    if (isImageQuestion)
+                                    {
+                                        foreach (var correctOption in attemptedQuestion.SelectedOptions)
+                                        {
+                                            var imgSrc = correctOption.Option.Image != null ? string.Format("/Content/images/{0}", correctOption.Option.Image.Name) : string.Empty;
+
+                                            if (correctOption.Option.IsCorrect)
+                                            {
+                                                <div class="m-t-10 alert alert-icon alert-success" role="alert">
+                                                    <i class="mdi mdi-check-circle-outline"></i>
+                                                    <img src="@imgSrc" class="img-thumbnail" style="height: 300px;">
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="m-t-10 alert alert-icon alert-danger" role="alert">
+                                                    <i class="mdi mdi-close-circle-outline"></i>
+                                                    <img src="@imgSrc" class="img-thumbnail" style="height: 300px;">
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var correctOption in attemptedQuestion.SelectedOptions)
+                                        {
+                                            if (correctOption.Option.IsCorrect)
+                                            {
+                                                <div class="m-t-10 alert alert-icon alert-success" role="alert">
+                                                    <i class="mdi mdi-check-circle-outline"></i>
+                                                    @correctOption.Option.Answer
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="m-t-10 alert alert-icon alert-danger" role="alert">
+                                                    <i class="mdi mdi-close-circle-outline"></i>
+                                                    @correctOption.Option.Answer
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (isImageQuestion)
+                                {
+                                    foreach (var correctOption in attemptedQuestion.Question.Options.Where(x => x.IsCorrect))
+                                    {
+                                        var imgSrc = correctOption.Image != null ? string.Format("/Content/images/{0}", correctOption.Image.Name) : string.Empty;
+
+                                        <div class="m-t-10 alert alert-icon alert-success" role="alert">
+                                            <i class="mdi mdi-check-circle-outline"></i>
+                                            <img src="@imgSrc" class="img-thumbnail" style="height: 300px;">
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (var correctOption in attemptedQuestion.Question.Options.Where(x => x.IsCorrect))
+                                    {
+                                        <div class="m-t-10 alert alert-icon alert-success" role="alert">
+                                            <i class="mdi mdi-check-circle-outline"></i>
+                                            @correctOption.Answer
+                                        </div>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="m-t-10 alert alert-icon alert-warning" role="alert">
+                        <i class="mdi mdi-alert"></i>
+                        No Questions Attempted.
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    var quizResultShareLink = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.AttemptDetails(Model.StudentQuiz.ID));
+
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <a role="button" class="btn btn-lg btn-facebook btn-block waves-effect waves-light w-md" href="http://www.facebook.com/sharer.php?u=@quizResultShareLink" target="_blank">
+                    <span class="text-white"><i class="fab fa-facebook-square"></i>&nbsp;&nbsp;Share Quiz Results on Facebook</span>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a role="button" class="btn btn-lg btn-twitter btn-block waves-effect waves-light w-md" href="http://twitter.com/share?text=My%20Quiz%20Result&url=@quizResultShareLink" target="_blank">
+                    <span class="text-white"><i class="fab fa-twitter-square"></i>&nbsp;&nbsp;Share Quiz Results on Twitter</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready()
+        {
+            if (quizTimer != undefined) {
+                clearInterval(quizTimer);
+            }
+        }
+    </script>
+}

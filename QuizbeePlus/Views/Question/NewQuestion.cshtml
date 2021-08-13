@@ -1,0 +1,40 @@
+﻿@model QuizbeePlus.ViewModels.NewQuestionViewModel
+@{
+    ViewBag.Title = Model.PageInfo.PageTitle;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.QuestionsList(Model.QuizID)"><i class="fas fa-clipboard-list"></i>&nbsp;Questions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                <i class="fas fa-plus"></i>
+                                &nbsp;@Model.PageInfo.PageTitle
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    @if(Model.QuizType == QuizType.Image)
+                    {
+                        <div>
+                            @Html.Partial("_NewImageQuestion", Model)
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            @Html.Partial("_NewTextQuestion", Model)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

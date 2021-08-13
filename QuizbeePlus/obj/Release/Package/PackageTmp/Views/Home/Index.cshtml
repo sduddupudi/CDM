@@ -1,0 +1,171 @@
+﻿@model QuizbeePlus.ViewModels.HomeViewModel
+@{
+    ViewBag.Title = Model.PageInfo.PageTitle;
+
+    var shareableLink = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Home());
+}
+@if(!User.IsInRole("MockUser"))
+{
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="p-20">
+                <div class="row">
+                    <div class="mx-auto col-sm-8">
+                        <div class="text-center">
+                            <h4 class="font-600">@Model.PageInfo.PageTitle</h4>
+                            <p class="text-muted">
+                                @Model.PageInfo.PageDescription
+                            </p>
+                            <a href="@Url.NewQuiz()" role="button" class="btn btn-success m-t-10">
+                                <i class="fas fa-plus mg-r-10"></i>&nbsp;Create New Quiz
+                            </a>
+                            <a role="button" class="btn btn-facebook m-t-10" href="http://www.facebook.com/sharer.php?u=@shareableLink" target="_blank">
+                                <span class="text-white"><i class="fab fa-facebook-square"></i>&nbsp;&nbsp;Connect With Us</span>
+                            </a>
+                            <a role="button" class="btn btn-twitter m-t-10" href="http://twitter.com/share?text=Attempt%20Quizzes%20here&url=@shareableLink" target="_blank">
+                                <span class="text-white"><i class="fab fa-twitter-square"></i>&nbsp;&nbsp;Tweet To Us</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                @if (Model.Quizzes != null && Model.Quizzes.Count > 0)
+                {
+                    <div class="col-md-12 mt-3">
+                        @for (int i = 1; i <= Model.Quizzes.Count; i++)
+                        {
+                            i--;
+
+                            <div class="card-deck mb-4">
+                                @foreach (var quiz in Model.Quizzes.Skip(i).Take(3))
+                                {
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <b class="card-title">
+                                                <i class="fas fa-question-circle"></i>&nbsp; @quiz.Name
+                                            </b>
+                                            @if(quiz.QuizType == QuizType.Image)
+                                            {
+                                                <p title="This quiz contain images." class="badge badge-primary text-white pull-right mb-0">
+                                                    <i class="fas fa-images"></i>
+                                                </p>
+                                            }
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">
+                                                @if (quiz.Description.Length >= 300)
+                                                {
+                                                    <span>@quiz.Description.Substring(0, 300)...</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@quiz.Description</span>
+                                                }
+                                            </p>
+                                        </div>
+
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">
+                                                <i class="fas fa-stopwatch"></i>&nbsp;
+                                                Time Allowed :
+                                                @if (quiz.EnableQuizTimer)
+                                                {
+
+                                                    if (quiz.TimeDuration.Hours > 0)
+                                                    {
+                                                        if (quiz.TimeDuration.Hours == 1)
+                                                        {
+                                                            <span>@quiz.TimeDuration.Hours.ToString("00") Hour&nbsp;</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@quiz.TimeDuration.Hours.ToString("00") Hours&nbsp;</span>
+                                                        }
+                                                    }
+                                                    if (quiz.TimeDuration.Minutes > 0)
+                                                    {
+                                                        if (quiz.TimeDuration.Minutes == 1)
+                                                        {
+                                                            <span>@quiz.TimeDuration.Minutes.ToString("00") Minute</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@quiz.TimeDuration.Minutes.ToString("00") Minutes</span>
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span>Disabled</span>
+                                                }
+                                            </li>
+                                            <li class="list-group-item">
+                                                <i class="fas fa-list-ul"></i>&nbsp;
+                                                Total Questions :
+                                                @quiz.Questions.Count
+                                            </li>
+                                        </ul>
+                                        <div class="card-footer">
+                                            <b class="text-muted">
+                                                <a href="@Url.AttemptQuiz(quiz.ID)" class="card-link">
+                                                    <i class="fas fa-certificate "></i>&nbsp;
+                                                    Attempt this Quiz
+                                                </a>
+                                            </b>
+                                        </div>
+                                    </div>
+
+                                    i++;
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    if (Model.Pager != null && Model.Pager.EndPage > 1)
+                    {
+                        <div class="row">
+                            @if (Model.Pager.CurrentPage > 1)
+                            {
+                                <div class="col-sm-12">
+                                    <hr />
+                                    <div class="text-center">
+                                        <a href="@Url.Home(Model.searchTerm, Model.Pager.CurrentPage - 1, Model.Pager.PageSize)" role="button" class="btn btn-info m-t-10">
+                                            <i class="fas fa-clipboard-list mg-r-10"></i>&nbsp;Back
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+                            {
+                                <div class="col-sm-12">
+                                    <hr />
+                                    <div class="text-center">
+                                        <a href="@Url.Home(Model.searchTerm, Model.Pager.CurrentPage + 1, Model.Pager.PageSize)" role="button" class="btn btn-info m-t-10">
+                                            <i class="fas fa-clipboard-list mg-r-10"></i>&nbsp;See More Quizzes
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="m-t-10 alert alert-icon alert-warning" role="alert">
+                                    <i class="mdi mdi-alert"></i>
+                                    Sorry. No Quizzes Found.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+}

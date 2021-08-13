@@ -1,0 +1,26 @@
+﻿@model QuizbeePlus.ViewModels.StudentQuizViewModel
+@{
+    ViewBag.Title = Model.PageInfo.PageTitle;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.MyResults()"><i class="fas fa-clipboard-check"></i>&nbsp;My Quiz Results</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#"><i class="fas fa-clipboard-check"></i>&nbsp;@Model.PageInfo.PageTitle</a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="contenter" class="card-body">
+                    @Html.Partial("_AttemptDetails", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
