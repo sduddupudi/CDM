@@ -4,27 +4,47 @@ Author: CoderThemes
 Email: coderthemes@gmail.com
 File: Main file css
 */
-@import url("https://fonts.googleapis.com/css?family=Hind:400,500,700|Noto+Sans:400,700");
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
 /* ===========
    Menu
  =============*/
+.h1, h1 {
+    font-size:1.2rem;
+}
+.footer{
+  display: none;
+}
 .container-fluid {
-  max-width: 90%;
-  padding-left: 10px;
-  padding-right: 10px; }
-
+    max-width: 90%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+span.logo-small {
+  display:none !important;
+}
+.logo-small{
+    display:none !important;
+}
+.logo-large {
+    display: none;
+}
 .wrapper {
-  padding-top: 30px;
-  position: relative;
-  padding-bottom: 72px; }
+    padding-top: 30px;
+    position: relative;
+    padding-bottom: 72px;
+}
 
+.submitButton{
+    cursor:pointer;
+}
 #topnav {
-  right: 0;
-  left: 0;
-  top: 0;
-  z-index: 1030;
-  border: 0;
-  background: #089ce4; }
+    right: 0;
+    left: 0;
+    top: 0;
+    z-index: 1030;
+    border: 0;
+    background: #089ce4;
+}
   #topnav .has-submenu.active a {
     color: #ffffff; }
     #topnav .has-submenu.active a i {
@@ -285,7 +305,7 @@ File: Main file css
     color: #089ce4; }
   #topnav .navigation-menu > li .submenu li.has-submenu > a:after {
     content: "\F140";
-    font-family: "Material Design Icons";
+    font-family: 'Raleway', sans-serif;
     position: absolute;
     right: 30px; }
   #topnav .navigation-menu > li .submenu.open {
@@ -624,10 +644,12 @@ File: Main file css
   .user-list .user-list-item .user-desc {
     margin-left: 0; } }
 body {
-  background-color: #ffffff;
-  font-family: "Noto Sans", sans-serif;
-  color: #676a6c;
-  font-size: 14px; }
+    background-color: #ffffff;
+    font-family: 'Raleway', sans-serif;
+    color: #676a6c;
+    font-size: 14px;
+    background:radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+}
 
 #wrapper {
   width: 90%;
@@ -1419,8 +1441,9 @@ h1, h2, h3, h4, h5, h6 {
    Form
 ============= */
 label {
-  font-weight: 500;
-  font-family: "Hind", sans-serif; }
+    font-weight: 500;
+    font-family: 'Raleway', sans-serif;
+}
 
 textarea.form-control {
   min-height: 90px; }
@@ -2555,10 +2578,12 @@ h3.timeline-title {
 
 .btn-facebook, .btn-facebook:hover, .btn-facebook:active, .btn-facebook:visited {
 	background-color: #3B5998 !important;
+    
 }
 
 .btn-twitter, .btn-twitter:hover, .btn-twitter:active, .btn-twitter:visited {
-	background-color: #0084b4 !important;
+    background-color: #0084b4 !important;
+   
 }
 
 .qloader-holder {

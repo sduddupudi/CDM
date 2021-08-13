@@ -54,7 +54,7 @@
     }
 
     .logo-small {
-      display: none;
+      display: none !important;
     }
     .badge-topbar {
       position: absolute;
@@ -808,7 +808,7 @@
     display: none;
   }
   .logo-small {
-    display: inline-block !important;
+   display:none !important;
   }
   .dropdown-menu-lg {
     max-width: 230px;
