@@ -3,69 +3,76 @@
 @if (Model != null && Model.Question != null)
 {
     var isImageQuestion = Model.QuizType == QuizType.Image ? true : false;
-    
-    @Html.Partial("_Loader", "questionLoader")
 
-<form role="form" id="answerForm" method="post">
-    @if (Model.EnableQuestionTimer)
-    {
-        <p id="questionTimerControl" title="Time Spent on this Question" class="badge badge-primary text-white">
-            <span><i class="fas fa-clock mg-r-10"></i>&nbsp;</span>
-            <span id="questionHours">00</span>
-            <span>:</span>
-            <span id="questionMinutes">00</span>
-            <span>:</span>
-            <span id="questionSeconds">00</span>
-        </p>
-    }
-
-    <div class="form-group">
-        <h1>@Model.Question.Title</h1>
-        <hr />
+    @Html.Partial("_Loader", "questionLoader") 
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: @CustomHelper.GetPercentageProgress(Model.TotalQuestions,Model.QuestionIndex)" aria-valuenow="@Model.QuestionIndex+1" aria-valuemin="0" aria-valuemax="@Model.TotalQuestions">@CustomHelper.GetPercentageProgress(Model.TotalQuestions, Model.QuestionIndex)</div>
     </div>
 
-    @if (Model.Options.Where(o=>o.IsCorrect).Count() > 1)
-    {
-        <p class="text-muted">
-            Select all matching options.
-        </p>
-    }
-
-    <div class="form-group">
-        @foreach (var option in Model.Options)
+    <form role="form" id="answerForm" method="post">
+        @if (Model.EnableQuestionTimer)
         {
-            <div class="checkbox checkbox-success">
-                <input class="answer" type="checkbox" name="SelectedOptionID-@option.ID" value="@option.ID">
-
-                @if (!isImageQuestion)
-                {
-                    <label for="SelectedOptionID-@option.ID">
-                        @option.Answer
-                    </label>
-                }
-                else
-                {
-                    var imgSrc = option.Image != null ? string.Format("/Content/images/{0}", option.Image.Name) : string.Empty;
-
-                    <label for="SelectedOptionID-@option.ID">
-                        <img src="@imgSrc" class="img-thumbnail" style="height: 300px;">
-                    </label>
-                }
-            </div>
+            <p id="questionTimerControl" title="Time Spent on this Question" class="badge badge-primary text-white">
+                <span><i class="fas fa-clock mg-r-10"></i>&nbsp;</span>
+                <span id="questionHours">00</span>
+                <span>:</span>
+                <span id="questionMinutes">00</span>
+                <span>:</span>
+                <span id="questionSeconds">00</span>
+            </p>
         }
-    </div>
 
-    <div id="actionsRow">
-        <hr />
-        <button type="button" id="submitButton" class="btn btn-info waves-effect waves-light w-md"><i class="fas fa-check mg-r-10"></i>&nbsp;Submit Answer</button>
-        <button type="button" id="skipButton" class="btn btn-danger waves-effect waves-light w-md"><i class="fas fa-long-arrow-alt-right mg-r-10"></i>&nbsp;Skip</button>
-    </div>
-</form>
+        <div class="form-group">
+            <h1>@Model.Question.Title</h1>
+            <hr />
+        </div>
+
+        @if (Model.Options.Where(o => o.IsCorrect).Count() > 1)
+        {
+            <p class="text-muted">
+                Select all matching options.
+            </p>
+        }
+
+        <div class="form-group">
+            @foreach (var option in Model.Options)
+            {
+                <div class="checkbox checkbox-success">
+                    <input class="answer" type="checkbox" name="SelectedOptionID-@option.ID" value="@option.ID">
+
+                    @if (!isImageQuestion)
+                    {
+                        <label for="SelectedOptionID-@option.ID">
+                            @option.Answer
+                        </label>
+                    }
+                    else
+                    {
+                        var imgSrc = option.Image != null ? string.Format("/Content/images/{0}", option.Image.Name) : string.Empty;
+
+                        <label for="SelectedOptionID-@option.ID">
+                            <img src="@imgSrc" class="img-thumbnail" style="height: 300px;">
+                        </label>
+                    }
+                </div>
+            }
+        </div>
+
+        <div id="actionsRow">
+            <hr />
+            <button type="button" id="submitButton" class="btn btn-info waves-effect waves-light w-md"><i class="fas fa-check mg-r-10"></i>&nbsp;Submit Answer</button>
+            <button type="button" id="skipButton" class="btn btn-danger waves-effect waves-light w-md"><i class="fas fa-long-arrow-alt-right mg-r-10"></i>&nbsp;Skip</button>
+        </div>
+    </form>
 
     <script>
 		$(document).ready(function () {
 			StartQuestionTimer();
-
+            $(".answer:checkbox").click(function () {
+                var currentCheckbox = $(this);
+                $('.answer:checkbox:checked').prop("checked",false);
+                currentCheckbox.prop("checked", true);                
+            });
             $("#submitButton").click(function () {
                 if ($('.answer:checkbox:checked').map(function () { return this.value; }).get().length > 0)
 				{

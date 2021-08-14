@@ -28,6 +28,12 @@ namespace QuizbeePlus.Helpers
             }
             return false;
         }
+        // 1*100/15 = 50, 2*100/2=100
+         public static string GetPercentageProgress(int TotalProgress,int CurrentProgress)
+        {
+            string PercentageString = string.Format("{0}%", CurrentProgress * 100 / TotalProgress);
+            return PercentageString;
+        }
 
     }
 }
