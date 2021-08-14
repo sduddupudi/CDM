@@ -34,8 +34,8 @@ namespace QuizbeePlus.Controllers
         public ActionResult UnAuthorized()
         {
             Response.StatusCode = 403;
-
-            return View();
+            return RedirectToAction("AvatarPage","Home");
+            //return View();
         }
     }
 }

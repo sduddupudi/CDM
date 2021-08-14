@@ -21,7 +21,13 @@
 
 </head>
 <body>
+	
+	@if(CustomHelper.isGeneralUser(User))
+    {
 	@Html.Partial("_TopNav")
+    }
+
+	
 
 	<div class="wrapper">
 		@RenderBody()

@@ -79,7 +79,7 @@ namespace QuizbeePlus.Controllers
         [HttpPost]
         public async Task<ActionResult> AnswerQuestion(AttemptQuizViewModel model)
         {
-            Thread.Sleep(2000);
+            //Thread.Sleep(2000);
 
             var studentQuiz = StudentQuizzesService.Instance.GetStudentQuiz(model.StudentQuizID);
 

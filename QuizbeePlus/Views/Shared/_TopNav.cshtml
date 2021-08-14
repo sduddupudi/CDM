@@ -8,7 +8,7 @@
                     <span class="logo-large"><i class="fas fa-tasks"></i> Quizbee</span>
                 </a>
             </div>
-            @if (!User.IsInRole("MockUser"))
+            @if (!CustomHelper.isMockUser(User))
             {
                 <div class="navbar-custom">
                     <div id="navigation">

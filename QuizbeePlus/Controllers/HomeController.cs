@@ -8,9 +8,10 @@ using System.Web.Mvc;
 
 namespace QuizbeePlus.Controllers
 {
-    [AllowAnonymous]
+    [AllowAnonymous]    
     public class HomeController : BaseController
     {
+        [Commons.CustomAuthorize("Administrator","User","MockUser")]
         public ActionResult Index(string search, int? page, int? items)
         {
             HomeViewModel model = new HomeViewModel();
@@ -37,7 +38,17 @@ namespace QuizbeePlus.Controllers
                 return RedirectToAction(quizzesSearch.Quizzes[0].ID.ToString(), "attempt-quiz");
             }
 
+            if(User.Identity.Name=="" || quizzesSearch.Quizzes.Count==0)
+            {
+                return RedirectToAction("AvatarPage");
+            }
+
             return View(model);
+        }
+
+        public ActionResult AvatarPage()
+        {
+            return View();
         }
     }
 }
