@@ -246,5 +246,26 @@ namespace QuizbeePlus.Services
                                     .FirstOrDefault();
             }
         }
+
+        public Quiz GetQuizWithUnAttemptedQuestions(int ID,int StudentQuizId)
+        {
+            using (var context = new QuizbeeContext())
+            {
+                var Quizze= context.Quizzes
+                                    .Where(q => q.ID == ID)
+                                    .Include(q => q.Questions)
+                                    .Include("Questions.Image")
+                                    .Include("Questions.Options")
+                                    .Include("Questions.Options.Image")
+                                    .Where(q => q.Questions.Count > 0) //get quiz with Questions greater than 0
+                                    .FirstOrDefault();
+
+                var QuestionsAttempted = context.AttemptedQuestions.Where(x => x.StudentQuizID == StudentQuizId)
+                    .Include(q => q.QuestionID);
+
+                return Quizze;
+
+            }
+        }
     }
 }

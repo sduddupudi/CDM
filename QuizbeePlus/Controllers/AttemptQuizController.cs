@@ -36,6 +36,21 @@ namespace QuizbeePlus.Controllers
             model.TimeDuration = quiz.TimeDuration;
             model.EnableQuizTimer = quiz.EnableQuizTimer;
 
+            StudentQuiz studentQuiz = StudentQuizzesService.Instance.GetStudentQuiz(QuizID, User.Identity.GetUserId());
+            if (studentQuiz != null )
+            {
+                ViewBag.QuizCompleted = "inprogress";
+
+                if (studentQuiz.CompletedAt != null)
+                {
+                    ViewBag.QuizCompleted = "completed";
+                }
+            }
+            else
+            {
+                ViewBag.QuizCompleted = "start";
+            }
+
             return View(model);
         }
 
@@ -53,26 +68,55 @@ namespace QuizbeePlus.Controllers
             studentQuiz.StartedAt = DateTime.Now;
             studentQuiz.ModifiedOn = DateTime.Now;
 
-            if (await StudentQuizzesService.Instance.NewStudentQuiz(studentQuiz))
+            StudentQuiz studentQuizAttempted = StudentQuizzesService.Instance.GetStudentQuiz(quiz.ID, User.Identity.GetUserId());
+            if (studentQuizAttempted != null)
             {
-                model.QuizType = quiz.QuizType;
-                model.StudentQuizID = studentQuiz.ID;
-                model.TotalQuestions = quiz.Questions.Count;
-                model.Question = quiz.Questions.FirstOrDefault();
-                model.QuestionIndex = 0;
+                foreach (AttemptedQuestion aq in studentQuizAttempted.AttemptedQuestions)
+                {
+                    quiz.Questions.RemoveAll(item => item.ID == aq.Question.ID);
+                }
 
-                model.Options = new List<Option>();
-                model.Options.AddRange(model.Question.Options);
-                model.Options.Shuffle();
+                if (studentQuizAttempted.CompletedAt != null)
+                {
+                    return RedirectToAction("AttemptDetails", new { studentQuizID = studentQuizAttempted.ID, isPartial = true, timerExpired = model.TimerExpired });
+                }
+            }
+            
+           
+            if (quiz.Questions.Count != 0)
+            {
+                if (await StudentQuizzesService.Instance.NewStudentQuiz(studentQuiz))
+                {
+                    model.QuizType = quiz.QuizType;
+                    model.StudentQuizID = studentQuiz.ID;
+                    model.TotalQuestions = quiz.Questions.Count;
+                    model.Question = quiz.Questions.FirstOrDefault();
+                    model.QuestionIndex = 0;
 
-                model.EnableQuestionTimer = quiz.EnableQuestionTimer;
-                model.Seconds = Calculator.CalculateAllowedQuestionTime(quiz);
+                    model.Options = new List<Option>();
+                    model.Options.AddRange(model.Question.Options);
+                    model.Options.Shuffle();
 
-                return PartialView("_QuizQuestion", model);
+                    model.EnableQuestionTimer = quiz.EnableQuestionTimer;
+                    model.Seconds = Calculator.CalculateAllowedQuestionTime(quiz);
+
+                    return PartialView("_QuizQuestion", model);
+                }
+                else
+                {
+                    return new HttpStatusCodeResult(500);
+                }
             }
             else
             {
-                return new HttpStatusCodeResult(500);
+                if (studentQuizAttempted.CompletedAt != null)
+                {
+                    return RedirectToAction("AttemptDetails", new { studentQuizID = studentQuiz.ID, isPartial = true, timerExpired = model.TimerExpired });
+                }
+                else
+                {
+                    return new HttpStatusCodeResult(500);
+                }
             }
         }
 

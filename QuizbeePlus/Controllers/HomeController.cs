@@ -11,7 +11,7 @@ namespace QuizbeePlus.Controllers
     [AllowAnonymous]    
     public class HomeController : BaseController
     {
-        [Commons.CustomAuthorize("Administrator","User","MockUser")]
+       
         public ActionResult Index(string search, int? page, int? items)
         {
             HomeViewModel model = new HomeViewModel();
@@ -33,15 +33,15 @@ namespace QuizbeePlus.Controllers
 
             model.Pager = new Pager(model.TotalCount, model.pageNo, model.pageSize);
 
-            if(User.IsInRole("MockUser") && quizzesSearch.Quizzes.Count>0)
+            if((User.IsInRole("MockUser") || Request.QueryString["user"]=="mockuser") && quizzesSearch.Quizzes.Count>0)
             {
-                return RedirectToAction(quizzesSearch.Quizzes[0].ID.ToString(), "attempt-quiz");
+                return RedirectToAction(quizzesSearch.Quizzes[0].ID.ToString(), "attempt-quiz", new { user = "mockuser" });
             }
 
-            if(User.Identity.Name=="" || quizzesSearch.Quizzes.Count==0)
-            {
-                return RedirectToAction("AvatarPage");
-            }
+            //if(User.Identity.Name=="" || quizzesSearch.Quizzes.Count==0)
+            //{
+            //    return RedirectToAction("AvatarPage");
+            //}
 
             return View(model);
         }

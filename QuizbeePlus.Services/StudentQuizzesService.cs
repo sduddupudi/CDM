@@ -141,6 +141,28 @@ namespace QuizbeePlus.Services
             }
         }
 
+        public StudentQuiz GetStudentQuiz(int QuizId,String StudentId)
+        {
+            using (var context = new QuizbeeContext())
+            {                
+
+                return context.StudentQuizzes
+                    .Where(x => x.StudentID == StudentId)
+                    .Where(x => x.QuizID == QuizId)
+                   .Include("AttemptedQuestions")
+                   .Include("AttemptedQuestions.SelectedOptions")
+                   .Include("AttemptedQuestions.SelectedOptions.Option")
+                   .Include("AttemptedQuestions.SelectedOptions.Option.Image")
+                   .Include("Quiz")
+                   .Include("Quiz.Questions")
+                   .Include("Quiz.Questions.Options")
+                   .Include("Quiz.Questions.Options.Image")
+                   .Include("Student")
+                   .OrderByDescending(x => x.StartedAt)
+                   .FirstOrDefault();
+            }
+        }
+
         public async Task<bool> NewStudentQuiz(StudentQuiz studentQuiz)
         {
             using (var context = new QuizbeeContext())

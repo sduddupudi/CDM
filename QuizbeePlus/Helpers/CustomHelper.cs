@@ -8,6 +8,8 @@ namespace QuizbeePlus.Helpers
 {
     public class CustomHelper
     {
+        
+
         public static bool isMockUser(IPrincipal CurrentUser)
         {
             if(CurrentUser.IsInRole("MockUser"))
@@ -33,7 +35,7 @@ namespace QuizbeePlus.Helpers
         {
             string PercentageString = string.Format("{0}%", CurrentProgress * 100 / TotalProgress);
             return PercentageString;
-        }
+        }       
 
     }
 }
