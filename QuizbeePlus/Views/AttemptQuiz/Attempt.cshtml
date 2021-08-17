@@ -43,14 +43,23 @@
                                         @Model.Description
                                     </p>
                                 </div>
-                                @*@if (!User.IsInRole("MockUser"))
-                                {*@
+                               
                                     <div class="row m-t-30">
                                         <div class="col-12">
-                                            <button type="button" id="startButton" class="btn btn-lg btn-success btn-block waves-effect waves-light w-md"><i class="fas fa-sign-in-alt"></i>&nbsp;Start Quiz</button>
+                                            @if (ViewBag.QuizCompleted == "start")
+                                            {
+                                                <button type="button" data-status="@ViewBag.QuizCompleted" id="startButton" class="btn btn-lg btn-success btn-block waves-effect waves-light w-md"><i class="fas fa-sign-in-alt"></i>&nbsp;Start Quiz</button>
+
+                                            }
+                                            else
+                                            {
+                                                <button type="button" data-status="@ViewBag.QuizCompleted" id="startButton" class="btn btn-lg btn-success btn-block waves-effect waves-light w-md"><i class="fas fa-sign-in-alt"></i>&nbsp;Resume Quiz</button>
+
+                                            }
+
                                         </div>
                                     </div>
-                                @*}*@
+                                
                                 <div class="clearfix"></div>
                             </div>
                         </div>
@@ -88,7 +97,10 @@
         $("#startButton").click(function() {
             StartQuiz();
         });
-        //StartQuiz();
+        if ($("#startButton").attr("data-status") == "completed") {
+            StartQuiz();
+        }
+        
     });
 
     function StartQuiz() {
