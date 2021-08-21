@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using QuizbeePlus.Commons;
 using QuizbeePlus.Entities;
 using QuizbeePlus.Services;
 using QuizbeePlus.ViewModels;
@@ -44,7 +45,7 @@ namespace QuizbeePlus.Controllers
             }
             else return HttpNotFound();
         }
-
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpGet]
         public ActionResult NewQuestion(int quizID)
         {
@@ -65,7 +66,7 @@ namespace QuizbeePlus.Controllers
 
             return View(model);
         }
-
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult> NewQuestion(FormCollection collection)
         {
@@ -135,6 +136,7 @@ namespace QuizbeePlus.Controllers
             }
         }
 
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpGet]
         public ActionResult EditQuestion(int quizID, int ID)
         {
@@ -163,7 +165,7 @@ namespace QuizbeePlus.Controllers
 
             return View(model);
         }
-
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult> EditQuestion(FormCollection collection)
         {
@@ -234,7 +236,7 @@ namespace QuizbeePlus.Controllers
                 return new HttpStatusCodeResult(500);
             }
         }
-
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult> DeleteQuestion(FormCollection collection)
         {

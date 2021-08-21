@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -595,6 +596,11 @@ namespace QuizbeePlus.Helpers
 
             routeURL = HttpUtility.UrlDecode(routeURL, System.Text.Encoding.UTF8);
             return routeURL.ToLower();
+        }
+
+        public static string AvatarPage()
+        {
+            return ConfigurationManager.AppSettings["referrerdomain"];
         }
 
     }

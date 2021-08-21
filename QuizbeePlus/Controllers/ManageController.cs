@@ -12,10 +12,11 @@ using QuizbeePlus.Data;
 using QuizbeePlus.ViewModels;
 using System.Collections.Generic;
 using System.Net;
+using QuizbeePlus.Commons;
 
 namespace QuizbeePlus.Controllers
 {
-    [Authorize]
+    [CustomAuthorize(Roles = "Administrator,User")]
     public class ManageController : Controller
     {
         private QuizbeeSignInManager _signInManager;

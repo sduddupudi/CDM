@@ -26,6 +26,12 @@ namespace QuizbeePlus
             );
 
             routes.MapRoute(
+               name: "HomeWithCreateUser",
+               url: "Home/{createUser}/quiz/{ID}",
+               defaults: new { controller = "Home", action = "CreateUser" }
+           );
+
+            routes.MapRoute(
                 name: "Register",
                 url: "register/",
                 defaults: new { controller = "Account", action = "Register" }
@@ -36,6 +42,12 @@ namespace QuizbeePlus
                 url: "login/",
                 defaults: new { controller = "Account", action = "Login" }
             );
+
+            routes.MapRoute(
+               name: "LoginUser",
+               url: "loginUser/{user}/quiz/{ID}",
+               defaults: new { controller = "Account", action = "LoginMock", user = UrlParameter.Optional }
+           );
 
             routes.MapRoute(
                 name: "Logout",

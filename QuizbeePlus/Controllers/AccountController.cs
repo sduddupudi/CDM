@@ -60,13 +60,29 @@ namespace QuizbeePlus.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> Login(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;            
-
-            if((Request.QueryString["User"] != null && Request.QueryString["User"].ToString().ToLower() == "mockuser")|| (returnUrl!=null && returnUrl.ToString().Contains("mockuser")))
+            ViewBag.ReturnUrl = returnUrl; 
+            
+            if((Request.QueryString["User"] != null && Request.QueryString["User"].ToString().ToLower() == "user")|| (returnUrl!=null && returnUrl.ToString().Contains("user")))
             {
-                return await CreatMockUser();
-            }           
-            return  View("Login", "_LayoutEmpty", new LoginViewModel());
+               return  View("Login", "_LayoutEmpty", new LoginViewModel());
+            } 
+            return await CreatMockUser(returnUrl);                      
+            
+        }
+
+        [AllowAnonymous]
+        public async Task<ActionResult> LoginMock(string user, string ID)
+        {
+           
+            if (user=="newuser")
+            {
+                return await CreatMockUser("");
+            }
+            else
+            {
+                return View("Login", "_LayoutEmpty", new LoginViewModel());
+            }
+            
         }
 
         //
@@ -175,7 +191,7 @@ namespace QuizbeePlus.Controllers
             return View("Register", "_LayoutEmpty", model);
         }
 
-        public async Task<ActionResult> CreatMockUser()
+        public async Task<ActionResult> CreatMockUser(string returnURL)
         {
             var user = new QuizbeeUser { UserName = Variables.NewMockUser, Email = Variables.NewMockUserEMail, RegisteredOn = DateTime.Now };
             var result = await UserManager.CreateAsync(user, Variables.NewMockUser.Replace("MockUser_",""));

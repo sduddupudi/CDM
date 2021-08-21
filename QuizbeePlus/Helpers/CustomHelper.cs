@@ -21,7 +21,7 @@ namespace QuizbeePlus.Helpers
 
         public static bool isGeneralUser(IPrincipal CurrentUser)
         {
-            if (CurrentUser.Identity.Name!="")
+            if (CurrentUser.Identity.IsAuthenticated)
             {
                 if(!CurrentUser.IsInRole("MockUser"))
                 {

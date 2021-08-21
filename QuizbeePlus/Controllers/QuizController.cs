@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using QuizbeePlus.Commons;
 using QuizbeePlus.Entities;
 using QuizbeePlus.Services;
 using QuizbeePlus.ViewModels;
@@ -37,7 +38,7 @@ namespace QuizbeePlus.Controllers
 
             return View(model);
         }
-
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpGet]
         public ActionResult NewQuiz()
         {
@@ -56,7 +57,7 @@ namespace QuizbeePlus.Controllers
 
             return View(model);
         }
-
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult> NewQuiz(NewQuizViewModel model)
         {
@@ -107,7 +108,7 @@ namespace QuizbeePlus.Controllers
                 return new HttpStatusCodeResult(500);
             }
         }
-
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpGet]
         public ActionResult EditQuiz(int ID)
         {
@@ -153,7 +154,7 @@ namespace QuizbeePlus.Controllers
 
             return View(model);
         }
-
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult> EditQuiz(EditQuizViewModel model)
         {
@@ -207,7 +208,7 @@ namespace QuizbeePlus.Controllers
                 return new HttpStatusCodeResult(500);
             }
         }
-
+        [CustomAuthorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult> DeleteQuiz(EditQuizViewModel model)
         {

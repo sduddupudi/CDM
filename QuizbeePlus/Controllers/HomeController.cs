@@ -5,6 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Configuration;
+using QuizbeePlus.Helpers;
+using QuizbeePlus.Entities;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 
 namespace QuizbeePlus.Controllers
 {
@@ -28,25 +33,43 @@ namespace QuizbeePlus.Controllers
 
             var quizzesSearch = QuizzesService.Instance.GetQuizzesForHomePage(model.searchTerm, model.pageNo, model.pageSize);
 
+           
+
             model.Quizzes = quizzesSearch.Quizzes;
             model.TotalCount = quizzesSearch.TotalCount;
 
             model.Pager = new Pager(model.TotalCount, model.pageNo, model.pageSize);
 
             if((User.IsInRole("MockUser") || Request.QueryString["user"]=="mockuser") && quizzesSearch.Quizzes.Count>0)
-            {
-                return RedirectToAction(quizzesSearch.Quizzes[0].ID.ToString(), "attempt-quiz", new { user = "mockuser" });
+            {               
+               
+                if (Request.UrlReferrer!=null && Request.UrlReferrer.ToString().Contains(ConfigurationManager.AppSettings["referrerdomain"]))
+                {
+                    return RedirectToAction(quizzesSearch.Quizzes[0].ID.ToString(), "attempt-quiz", new { user = "mockuser" });
+                }
             }
 
-            //if(User.Identity.Name=="" || quizzesSearch.Quizzes.Count==0)
-            //{
-            //    return RedirectToAction("AvatarPage");
-            //}
-
             return View(model);
+
         }
 
-        public ActionResult AvatarPage()
+        public ActionResult CreateUser(string createUser , int ID)
+        {
+            if(createUser=="newuser")
+            {              
+               
+                return RedirectToAction(createUser, "loginUser", new { user = "mockuser",quizId= ID });
+                // Redirect To Quiz
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            
+        }
+
+
+            public ActionResult AvatarPage()
         {
             return View();
         }
