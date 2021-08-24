@@ -34,10 +34,23 @@
                             @for (int i = 1; i <= Model.Quizzes.Count; i++)
                             {
                                 i--;
-
+                                string CompletiondateTime = string.Empty;
                                 <div class="card-deck mb-4">
                                     @foreach (var quiz in Model.Quizzes.Skip(i).Take(3))
                                     {
+                                        {
+
+                                            if (Model.studentQuizResults != null)
+                                            {
+                                                
+                                                var studentQuizResult = Model.studentQuizResults.Where(q => q.QuizID == quiz.ID).FirstOrDefault();
+                                                if (studentQuizResult!=null && studentQuizResult.CompletedAt.HasValue)
+                                                {
+                                                    CompletiondateTime = StudentQuizResult.GetDateString(studentQuizResult.CompletedAt);
+                                                }
+
+                                            }
+                                        }
                                         <div class="card">
                                             <div class="card-header">
                                                 <b class="card-title">
@@ -106,10 +119,21 @@
                                             </ul>
                                             <div class="card-footer">
                                                 <b class="text-muted">
+                                                    @if(CompletiondateTime== string.Empty)
+                                                    {
                                                     <a href="@Url.AttemptQuiz(quiz.ID)" class="card-link">
                                                         <i class="fas fa-certificate "></i>&nbsp;
                                                         Attempt this Quiz
                                                     </a>
+                                                    }
+                                                    else
+                                                    {
+                                                    <a href="@Url.MyResults()" class="card-link">
+                                                        <i class="fas fa-certificate "></i>&nbsp;
+                                                        Quiz Completed
+                                                    </a>
+                                                    }
+                                                    
                                                 </b>
                                             </div>
                                         </div>

@@ -32,25 +32,20 @@ namespace QuizbeePlus.Controllers
             model.pageSize = items ?? 9;
 
             var quizzesSearch = QuizzesService.Instance.GetQuizzesForHomePage(model.searchTerm, model.pageNo, model.pageSize);
-
-           
-
+         
             model.Quizzes = quizzesSearch.Quizzes;
             model.TotalCount = quizzesSearch.TotalCount;
 
             model.Pager = new Pager(model.TotalCount, model.pageNo, model.pageSize);
 
             if((User.IsInRole("MockUser") || Request.QueryString["user"]=="mockuser") && quizzesSearch.Quizzes.Count>0)
-            {               
-               
-                if (Request.UrlReferrer!=null && Request.UrlReferrer.ToString().Contains(ConfigurationManager.AppSettings["referrerdomain"]))
-                {
-                    return RedirectToAction(quizzesSearch.Quizzes[0].ID.ToString(), "attempt-quiz", new { user = "mockuser" });
-                }
-            }
+            {
+                var quizzsSearchStudent = QuizzesService.Instance.GetQuizzesForHomePageWithStudent(User.Identity.GetUserId(), model.searchTerm, model.pageNo, model.pageSize);
+
+                model.studentQuizResults = quizzsSearchStudent.StudentQuizzesResult;                
+            }          
 
             return View(model);
-
         }
 
         public ActionResult CreateUser(string createUser , int ID)

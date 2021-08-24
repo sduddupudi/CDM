@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace QuizbeePlus.Entities.CustomEntities
 {
-    public class QuizzesSearch
+    public class QuizzesSearchStudent
     {
-        public List<Quiz> Quizzes { get; set; }
-
-        public List<StudentQuizResult> studentQuizResults { get; set; }
-
+        public List<Quiz> Quizzes { get; set; }      
+        public List<StudentQuizResult> StudentQuizzesResult { get; set; }
         public int TotalCount { get; set; }
     }
 }

@@ -105,6 +105,60 @@ namespace QuizbeePlus.Services
             }
         }
 
+        public QuizzesSearchStudent GetQuizzesForHomePageWithStudent(string userID,string searchTerm, int pageNo, int pageSize)
+        {
+            using (var context = new QuizbeeContext())
+            {
+                var search = new QuizzesSearchStudent();
+
+                if (string.IsNullOrEmpty(searchTerm))
+                {
+                    search.Quizzes = context.Quizzes
+                                        .Include(q => q.Questions)
+                                        .Where(x => x.Questions.Count > 0)
+                                        .OrderByDescending(x => x.ModifiedOn)
+                                        .Skip((pageNo - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .ToList();
+
+                    search.StudentQuizzesResult = (from quiz in context.Quizzes
+                                 join quizattempt in context.StudentQuizzes
+                               on quiz.ID equals quizattempt.QuizID
+                                where quizattempt.StudentID == userID
+                                select new StudentQuizResult { QuizID= quiz.ID, StartedAt = quizattempt.StartedAt,CompletedAt= quizattempt.CompletedAt }).ToList<StudentQuizResult>();                     
+
+                    search.TotalCount = context.Quizzes.Where(x => x.Questions.Count > 0).Count();
+                }
+                else
+                {
+                    search.Quizzes = context.Quizzes
+                                        .Where(x => x.Name.ToLower().Contains(searchTerm.ToLower()))
+                                        .Include(q => q.Questions)
+                                        .Where(x => x.Questions.Count > 0)
+                                        .OrderByDescending(x => x.ModifiedOn)
+                                        .Skip((pageNo - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .ToList();
+
+                    var Query = (from quiz in context.Quizzes
+                                 join quizattempt in context.StudentQuizzes
+                               on quiz.ID equals quizattempt.QuizID
+                                 where quizattempt.StudentID == userID
+                                 select new { quiz.ID, quizattempt.StartedAt, quizattempt.CompletedAt }).ToList();
+
+
+
+
+
+
+                    search.TotalCount = context.Quizzes.Where(x => x.Questions.Count > 0)
+                                        .Where(x => x.Name.ToLower().Contains(searchTerm.ToLower())).Count();
+                }
+
+                return search;
+            }
+        }
+
         public async Task<bool> SaveNewQuiz(Quiz quiz)
         {
             using (var context = new QuizbeeContext())
