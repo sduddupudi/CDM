@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizbeePlus", "QuizbeePlus\QuizbeePlus.csproj", "{7D4D0841-9DD5-4EF6-BF06-C0DC6F7E3346}"
 EndProject
@@ -10,6 +10,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizbeePlus.Services", "QuizbeePlus.Services\QuizbeePlus.Services.csproj", "{EF3C3A89-E168-4D8B-ACA8-D1AFEFE3519F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizbeePlus.Data", "QuizbeePlus.Data\QuizbeePlus.Data.csproj", "{93AF6E95-8F67-4A1A-B034-60DCD1E42100}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5944F16-2993-43CC-9E83-B687505088C6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +41,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A86149D2-6179-45F3-AD62-B43B75FDF568}
 	EndGlobalSection
 EndGlobal

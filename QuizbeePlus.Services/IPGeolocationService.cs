@@ -2,7 +2,6 @@
 using System.Net;
 using System.IO;
 using Newtonsoft.Json;
-using RestClient.Net;
 using System.Threading.Tasks;
 using QuizbeePlus.Entities.IPGeolocation;
 using System.Net.Http;
