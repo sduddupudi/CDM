@@ -30,9 +30,11 @@ namespace QuizbeePlus.Controllers
             model.searchTerm = search;
             model.pageNo = page ?? 1;
             model.pageSize = items ?? 9;
-
+           
             var quizzesSearch = QuizzesService.Instance.GetQuizzesForHomePage(model.searchTerm, model.pageNo, model.pageSize);
-         
+            Entities.IPGeolocation.Location myDeserializedClass = IPGeolocationService.Instance.GetLocationsDetailsAsync("");
+
+
             model.Quizzes = quizzesSearch.Quizzes;
             model.TotalCount = quizzesSearch.TotalCount;
 
