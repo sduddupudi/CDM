@@ -13,7 +13,7 @@ namespace QuizbeePlus.Data.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
             ContextKey = "QuizbeePlus.Data.QuizbeeContext";
         }
 

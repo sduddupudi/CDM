@@ -69,6 +69,13 @@ namespace QuizbeePlus.Controllers
             studentQuiz.ModifiedOn = DateTime.Now;
 
             StudentQuiz studentQuizAttempted = StudentQuizzesService.Instance.GetStudentQuiz(quiz.ID, User.Identity.GetUserId());
+            Entities.IPGeolocation.Location myDeserializedClass = IPGeolocationService.Instance.GetLocationsDetailsAsync("");
+            if(myDeserializedClass!=null)
+            {
+                studentQuiz.IPAddress = myDeserializedClass.ip;
+                studentQuiz.State = myDeserializedClass.state_prov;
+                studentQuiz.City = myDeserializedClass.city;
+            }
             if (studentQuizAttempted != null)
             {
                 foreach (AttemptedQuestion aq in studentQuizAttempted.AttemptedQuestions)

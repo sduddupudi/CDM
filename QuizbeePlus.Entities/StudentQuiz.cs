@@ -20,5 +20,11 @@ namespace QuizbeePlus.Entities
         public virtual List<AttemptedQuestion> AttemptedQuestions { get; set; }
 
         public int Score { get; set; }
+
+        public string IPAddress { get; set; }
+
+        public string State { get; set; }
+
+        public string City { get; set; }
     }
 }
