@@ -23,8 +23,8 @@ namespace QuizbeePlus.Controllers
 
             model.PageInfo = new PageInfo()
             {
-                PageTitle = "Quizbee",
-                PageDescription = "Quizbee helps you to create scalable and dynamic quizzes with any number of questions and related options. Creating and attempting Quizzes have never been this easy. Try it now!"
+                PageTitle = "CDM",
+                PageDescription = "Welcome to CDM"
             };
 
             model.searchTerm = search;
