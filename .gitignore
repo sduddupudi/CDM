@@ -2,4 +2,15 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/QuizbeePlus.Services/bin/Debug
+/QuizbeePlus.Services/bin
+/QuizbeePlus.Services/obj
+/QuizbeePlus.Data/bin
+/QuizbeePlus.Data/obj
+/QuizbeePlus.Data/DataClasses1.*
+/QuizbeePlus.Entities/obj
+/QuizbeePlus/bin
+/QuizbeePlus/obj
+/packages
+/.vs
+/.editorconfig
+/.vs/QuizbeePlus/v16
