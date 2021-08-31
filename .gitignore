@@ -15,3 +15,14 @@
 /.vs/QuizbeePlus/v16
 *.config
 QuizbeePlus/bin/
+QuizbeePlus.Services/bin
+QuizbeePlus.Services/obj
+QuizbeePlus.Data/bin
+QuizbeePlus.Data/obj
+QuizbeePlus.Entities/obj
+QuizbeePlus/bin
+QuizbeePlus/obj
+packages
+.vs
+.editorconfig
+.vs/QuizbeePlus/v16
